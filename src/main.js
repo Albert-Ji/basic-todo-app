@@ -6,7 +6,7 @@ const inputNewTodo = document.getElementById("new-todo");
 const todoNav = document.getElementById("todo-nav");
 
 // Define the state of our app
-const todos = [
+let todos = [
   { id: 1, text: "Buy milk", completed: false },
   { id: 2, text: "Buy bread", completed: false },
   { id: 3, text: "Buy jam", completed: true },
@@ -187,4 +187,47 @@ filteredTodos.forEach((todo) => {
   todoListElement.appendChild(createTodoItem(todo));
 });
 
+// Helper function to filter todos based on the current filter setting
+const filterTodos = (todos, filter) => {
+  switch (filter) {
+    case "all":
+      return [...todos];
+    case "completed":
+      return todos.filter((todo) => todo.completed);
+    case "active":
+      return todos.filter((todo) => !todo.completed);
+    default:
+      return [...todos];
+  }
+};
 
+
+const completedTodos = todos.filter((todo) => todo.completed);
+
+// Function to render the todos based on the current filter
+// Function to render the todos based on the current filter
+const renderTodos = () => {
+  todoListElement.replaceChildren(
+    ...filterTodos(todos, filter).map(createTodoItem),
+  );
+};
+
+todos.push({ id: nextTodoId++, text: todoText, completed: false });
+
+// Helper function to create a new array with the existing todos and a new todo item
+const addTodo = (todos, newTodoText) => [
+  ...todos,
+  { id: nextTodoId++, text: newTodoText, completed: false },
+];
+
+// Event handler to create a new todo item
+const handleKeyDownToCreateNewTodo = (event) => {
+  if (event.key === "Enter") {
+    const todoText = event.target.value.trim();
+    if (todoText) {
+      todos = addTodo(todos, todoText);
+      event.target.value = ""; // Clear the input
+      renderTodos();
+    }
+  }
+};
